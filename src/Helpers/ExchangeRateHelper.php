@@ -2,8 +2,6 @@
 
 namespace TransFeeCalc\Helpers;
 
-use mysql_xdevapi\Exception;
-
 class ExchangeRateHelper
 {
     const DEF_CURRENCY = 'EUR';
@@ -42,14 +40,14 @@ class ExchangeRateHelper
     {
         $rates = file_get_contents('https://api.exchangeratesapi.io/latest');
         if (!$rates) {
-            throw new Exception('Cannot get date from Exchange Rates service');
+            throw new \Exception('Cannot get date from Exchange Rates service');
         }
 
         $rates = json_decode($rates, true) ?? [];
         if (empty($rates['rates'][$currency]) || (!$rate = $rates['rates'][$currency])) {
             // Don't have API service registration, then use mock data instead
             if (!$rate = self::$defRates['rates'][$currency]) {
-                throw new Exception(sprintf('Can\'t get exchange rate for %s currency', $currency));
+                throw new \Exception(sprintf('Can\'t get exchange rate for %s currency', $currency));
             }
         }
 
