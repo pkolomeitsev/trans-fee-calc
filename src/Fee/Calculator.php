@@ -25,8 +25,6 @@ class Calculator
             $isEU = $this->isEU($transaction->getBin());
             $rate = $this->getExchangeRateByCurrency($transaction->getCurrency());
 
-//echo sprintf('%s / %s / %s' . PHP_EOL, $amount, $rate, $isEU);
-
             $this->result[] = round(($amount / $rate) * (($isEU) ? 0.01 : 0.02), 2);
         }
 

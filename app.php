@@ -12,13 +12,8 @@ $data = (new Reader($binFile))
     ->readData()
     ->getData();
 
-//var_dump($data);
-
 $collection = (new Aggregator($data))
     ->aggregate()
     ->getCollection();
-
-//var_dump($collection);
-//die;
 
 echo (new FeeCalculator($collection))->calculate() . PHP_EOL;
