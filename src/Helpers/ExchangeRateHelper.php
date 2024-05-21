@@ -22,6 +22,7 @@ class ExchangeRateHelper
     /**
      * @param string $currency
      * @return int|mixed
+     * @throws \Exception
      */
     public static function getExchangeRate(string $currency)
     {
@@ -35,6 +36,7 @@ class ExchangeRateHelper
     /**
      * @param string $currency
      * @return mixed
+     * @throws \Exception
      */
     public static function getExchangeRatesFromAPI(string $currency)
     {

@@ -31,3 +31,4 @@ class TransactionTest extends TestCase
         $this->assertEquals($currency, $dto->getCurrency());
     }
 }
+//@TODO: remove setters and getters test as it doesn't really have sense
