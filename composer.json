@@ -1,0 +1,25 @@
+{
+    "name": "user/trans-fee-calc",
+    "description": "Transaction fee calculator",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "TransFeeCalc\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/src"
+        }
+    },
+    "authors": [
+        {
+            "name": "pkolomeitsev",
+            "email": "p.kolomeitsev@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^10.5"
+    }
+}
