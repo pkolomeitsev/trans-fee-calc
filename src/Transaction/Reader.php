@@ -17,6 +17,10 @@ class Reader
         if (empty($this->file)) {
             throw new \Exception('Input file with transactions is no set!');
         }
+
+        if (file_exists($this->file)) {
+            throw new \Exception(sprintf('%s file doesn\'t exists!', $this->file));
+        }
     }
 
     /**
