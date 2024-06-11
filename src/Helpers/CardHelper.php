@@ -1,6 +1,10 @@
 <?php
 
 namespace TransFeeCalc\Helpers;
+
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Contracts\Cache\ItemInterface;
+
 class CardHelper
 {
     private static array $euAssociated = [
@@ -22,12 +26,22 @@ class CardHelper
     /**
      * @param string $binCode
      * @return string
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     public static function getCountryCodeByBin(string $binCode): string
     {
-        $binLookup = static::getLookupData($binCode);
+        $cache = new FilesystemAdapter();
 
-        return $binLookup['country']['alpha2'] ?? '';
+        $key = sprintf('card-country-code-%s', $binCode);
+        $countryCode = $cache->get($key, function (ItemInterface $item) use ($binCode): string {
+            $item->expiresAfter(3600);
+
+            $binLookup = static::getLookupData($binCode);
+
+            return $binLookup['country']['alpha2'] ?? '';
+        });
+
+        return $countryCode;
     }
 
     /**
