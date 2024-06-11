@@ -4,57 +4,54 @@ namespace TransFeeCalc\Transaction;
 
 class Reader
 {
-    private array $data = [];
+    const LINE_SIZE = 4096;
+    private $filePointer;
+
+    private array $filterKeys = [
+        'bin', 'amount', 'currency'
+    ];
 
     /**
      * @param string $file
      * @throws \Exception
      */
-    public function __construct(
-        private readonly string $file = ''
-    )
+    public function __construct(string $file = '')
     {
-        if (empty($this->file)) {
+        if (empty($file)) {
             throw new \Exception('Input file with transactions is no set!');
         }
 
-        if (file_exists($this->file)) {
-            throw new \Exception(sprintf('%s file doesn\'t exists!', $this->file));
+        if (!file_exists($file)) {
+            throw new \Exception(sprintf('%s file doesn\'t exists!', $file));
+        }
+
+        $this->filePointer = fopen($file, 'r');
+        if (!$this->filePointer) {
+            throw new \Exception(sprintf('Can\'t read file %s ', $file));
         }
     }
 
     /**
-     * @return array
+     * @return \Generator
      */
-    public function getFileData():array
+    public function getFileData(): \Generator
     {
-        $fileData = file_get_contents($this->file);
-        if (empty($fileData)) {
-            return [];
-        }
 
-        return explode("\n", $fileData);
+        while (($line = fgets($this->filePointer, self::LINE_SIZE)) !== false) {
+
+            $data = json_decode($line, true);
+
+            if (!empty(array_diff($this->filterKeys, array_keys($data)))) {
+                echo sprintf('Data is not consistent: %s', $line);
+                continue;
+            }
+
+            yield $data;
+        }
     }
 
-    /**
-     * @return $this
-     */
-    public function readData(): static
+    public function __destruct()
     {
-        $fileData = $this->getFileData();
-
-        foreach ($fileData as $jsonString) {
-            $this->data[] = json_decode($jsonString, true);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getData(): array
-    {
-        return $this->data;
+        fclose($this->filePointer);
     }
 }
