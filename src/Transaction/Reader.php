@@ -2,20 +2,20 @@
 
 namespace TransFeeCalc\Transaction;
 
+use TransFeeCalc\Transaction\Validator\ValidatorInterface;
+
 class Reader
 {
     const LINE_SIZE = 4096;
     private $filePointer;
-
-    private array $filterKeys = [
-        'bin', 'amount', 'currency'
-    ];
+    private $validator;
 
     /**
      * @param string $file
+     * @param ValidatorInterface $validator
      * @throws \Exception
      */
-    public function __construct(string $file = '')
+    public function __construct(string $file, ValidatorInterface $validator)
     {
         if (empty($file)) {
             throw new \Exception('Input file with transactions is no set!');
@@ -29,6 +29,8 @@ class Reader
         if (!$this->filePointer) {
             throw new \Exception(sprintf('Can\'t read file %s ', $file));
         }
+
+        $this->validator = $validator;
     }
 
     /**
@@ -45,7 +47,7 @@ class Reader
 
             $data = json_decode($line, true);
 
-            if (!empty(array_diff($this->filterKeys, array_keys($data)))) {
+            if (empty($data) || !is_array($data) || $this->validator->validate($data)) {
                 echo sprintf('Data is not consistent: %s', $line);
                 continue;
             }
