@@ -8,7 +8,7 @@ class Reader
 {
     const LINE_SIZE = 4096;
     private $filePointer;
-    private $validator;
+    private ValidatorInterface $validator;
 
     /**
      * @param string $file
