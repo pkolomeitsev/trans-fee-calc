@@ -36,6 +36,10 @@ class Reader
      */
     public function getFileData(): \Generator
     {
+        // PHP is not properly recognizing the line endings
+        // when reading files either on or created by a Macintosh computer
+        // set the auto_detect_line_endings run-time configuration option to solve the issue
+        ini_set("auto_detect_line_endings", true);
 
         while (($line = fgets($this->filePointer, self::LINE_SIZE)) !== false) {
 
