@@ -4,40 +4,34 @@ namespace Tests\Fee;
 
 use PHPUnit\Framework\TestCase;
 use TransFeeCalc\Fee\Calculator;
+use TransFeeCalc\Fee\Ratio;
 use TransFeeCalc\Transaction\DTO\Transaction;
-
 
 class CalculatorTest extends TestCase
 {
+
+    private Calculator $feeCalculator;
+
+    public function setUp(): void
+    {
+        $this->feeCalculator = new Calculator();
+    }
+
     /**
      * @dataProvider dataProvider
+     *
+     * @param Transaction $transaction
+     * @param float $rate
+     * @param float $ratio
+     * @param $expected
      * @return void
      */
-    public function testAggregate($transaction, $isEU, $rate, $fee)
+    public function testCalculate(Transaction $transaction, float $rate, float $ratio, $expected): void
     {
-        $data = [$transaction];
+        $transaction->setRatio($ratio);
+        $transaction->setRate($rate);
 
-        $mock = $this->getMockBuilder(Calculator::class)
-            ->setConstructorArgs([$data])
-            ->onlyMethods(['isEU', 'getExchangeRateByCurrency'])
-            ->getMock();
-
-        $mock
-            ->expects($this->any())
-            ->method('isEU')
-            ->willReturn($isEU);
-
-        $mock
-            ->expects($this->any())
-            ->method('getExchangeRateByCurrency')
-            ->willReturn($rate);
-
-        $mock->calculate();
-
-        $this->assertSame(
-            $fee,
-            $mock->getResult()
-        );
+        $this->assertEquals($expected, $this->feeCalculator->calculate($transaction));
     }
 
     public static function dataProvider(): array
@@ -45,22 +39,16 @@ class CalculatorTest extends TestCase
         return [
             [
                 'transaction' => (new Transaction('123456', 100, 'EUR')),
-                'isEU' => true,
                 'rate' => 1,
-                'fee' => [1.0]
+                'ratio' => Ratio::DEFAULT_RATIO,
+                'expected' => 2,
             ],
             [
-                'transaction' => (new Transaction('123456', 100, 'USD')),
-                'isEU' => false,
-                'rate' => 1.01,
-                'fee' => [1.98]
-            ],
-            [
-                'transaction' => [],
-                'isEU' => false,
-                'rate' => 1.01,
-                'fee' => []
-            ],
+                'transaction' => (new Transaction('123456', 100, 'EUR')),
+                'rate' => 0.5,
+                'ratio' => Ratio::EU_RATIO,
+                'expected' => 2,
+            ]
         ];
     }
 }
