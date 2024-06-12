@@ -16,9 +16,9 @@ Expected results:
 PHPUnit tests
 -------------
 ```
-vendor/phpunit/phpunit/phpunit
+vendor/bin/phpunit
 ```
 code coverage
 ```
-vendor/phpunit/phpunit/phpunit --coverage-text --coverage-html tests/report
+vendor/bin/phpunit --coverage-text --coverage-html tests/report
 ```
