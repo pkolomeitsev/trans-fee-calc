@@ -12,7 +12,7 @@ class CalculatorTest extends TestCase
 
     private Calculator $feeCalculator;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->feeCalculator = new Calculator();
     }

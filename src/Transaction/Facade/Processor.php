@@ -33,18 +33,19 @@ class Processor
     /**
      * @param string $binCode
      * @return bool
+     * @throws \Psr\Cache\InvalidArgumentException
      */
-    public function isEU(string $binCode): bool
+    private function isEU(string $binCode): bool
     {
         return CardHelper::isEuAssociated(CardHelper::getCountryCodeByBin($binCode));
     }
 
     /**
      * @param string $currency
-     * @return int|mixed
+     * @return mixed
      * @throws \Exception
      */
-    public function getExchangeRateByCurrency(string $currency): mixed
+    private function getExchangeRateByCurrency(string $currency): mixed
     {
         return ExchangeRateHelper::getExchangeRate($currency);
     }

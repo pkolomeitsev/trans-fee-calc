@@ -47,7 +47,7 @@ class Reader
 
             $data = json_decode($line, true);
 
-            if (empty($data) || !is_array($data) || $this->validator->validate($data)) {
+            if (empty($data) || !is_array($data) || !$this->validator->validate($data)) {
                 echo sprintf('Data is not consistent: %s', $line);
                 continue;
             }
