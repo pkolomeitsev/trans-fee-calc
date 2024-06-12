@@ -58,6 +58,8 @@ class Reader
 
     public function __destruct()
     {
-        fclose($this->filePointer);
+        if (!empty($this->filePointer)) {
+            fclose($this->filePointer);
+        }
     }
 }

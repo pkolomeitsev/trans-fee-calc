@@ -35,7 +35,7 @@ class Processor
      * @return bool
      * @throws \Psr\Cache\InvalidArgumentException
      */
-    private function isEU(string $binCode): bool
+    protected function isEU(string $binCode): bool
     {
         return CardHelper::isEuAssociated(CardHelper::getCountryCodeByBin($binCode));
     }
@@ -45,7 +45,7 @@ class Processor
      * @return mixed
      * @throws \Exception
      */
-    private function getExchangeRateByCurrency(string $currency): mixed
+    protected function getExchangeRateByCurrency(string $currency): mixed
     {
         return ExchangeRateHelper::getExchangeRate($currency);
     }
