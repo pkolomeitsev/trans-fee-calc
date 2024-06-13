@@ -2,6 +2,9 @@
 
 namespace TransFeeCalc\Helpers;
 
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Contracts\Cache\ItemInterface;
+
 class ExchangeRateHelper
 {
     const DEF_CURRENCY = 'EUR';
@@ -40,18 +43,27 @@ class ExchangeRateHelper
      */
     public static function getExchangeRatesFromAPI(string $currency)
     {
-        $rates = file_get_contents('https://api.exchangeratesapi.io/latest');
-        if (!$rates) {
-            throw new \Exception('Cannot get date from Exchange Rates service');
-        }
+        $cache = new FilesystemAdapter();
 
-        $rates = json_decode($rates, true) ?? [];
-        if (empty($rates['rates'][$currency]) || (!$rate = $rates['rates'][$currency])) {
-            // Don't have API service registration, then use mock data instead
-            if (!$rate = self::$defRates['rates'][$currency]) {
-                throw new \Exception(sprintf('Can\'t get exchange rate for %s currency', $currency));
+        $key = sprintf('exchange-rate-%s', $currency);
+        $rate = $cache->get($key, function (ItemInterface $item) use ($currency): string {
+            $item->expiresAfter(3600);
+
+            $rates = file_get_contents('https://api.exchangeratesapi.io/latest');
+            if (!$rates) {
+                throw new \Exception('Cannot get date from Exchange Rates service');
             }
-        }
+
+            $rates = json_decode($rates, true) ?? [];
+            if (empty($rates['rates'][$currency]) || (!$rate = $rates['rates'][$currency])) {
+                // Don't have API service registration, then use mock data instead
+                if (!$rate = self::$defRates['rates'][$currency]) {
+                    throw new \Exception(sprintf('Can\'t get exchange rate for %s currency', $currency));
+                }
+            }
+
+            return $rate;
+        });
 
         return $rate;
     }
