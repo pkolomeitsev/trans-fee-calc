@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TransFeeCalc\Transaction\Facade;
 
@@ -21,7 +22,7 @@ class Processor
     {
         foreach ($this->reader->getFileData() as $row)
         {
-            $dto = new Transaction($row['bin'], $row['amount'], $row['currency']);
+            $dto = new Transaction($row['bin'], (float) $row['amount'], $row['currency']);
             $dto->setIsEU($this->isEU($dto->getBin()));
             $dto->setRate($this->getExchangeRateByCurrency($dto->getCurrency()));
             $dto->setRatio((new Ratio())->getRatio($dto));
@@ -45,7 +46,7 @@ class Processor
      * @return mixed
      * @throws \Exception
      */
-    protected function getExchangeRateByCurrency(string $currency): mixed
+    protected function getExchangeRateByCurrency(string $currency): float
     {
         return ExchangeRateHelper::getExchangeRate($currency);
     }

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TransFeeCalc\Helpers;
 
@@ -46,7 +47,7 @@ class ExchangeRateHelper
         $cache = new FilesystemAdapter();
 
         $key = sprintf('exchange-rate-%s', $currency);
-        $rate = $cache->get($key, function (ItemInterface $item) use ($currency): string {
+        $rate = $cache->get($key, function (ItemInterface $item) use ($currency): float {
             $item->expiresAfter(3600);
 
             $rates = file_get_contents('https://api.exchangeratesapi.io/latest');
@@ -62,9 +63,9 @@ class ExchangeRateHelper
                 }
             }
 
-            return $rate;
+            return (float) $rate;
         });
 
-        return $rate;
+        return (float) $rate;
     }
 }
