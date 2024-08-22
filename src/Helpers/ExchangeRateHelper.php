@@ -25,10 +25,10 @@ class ExchangeRateHelper
 
     /**
      * @param string $currency
-     * @return int|mixed
+     * @return float
      * @throws \Exception
      */
-    public static function getExchangeRate(string $currency)
+    public static function getExchangeRate(string $currency): float
     {
         if ($currency == self::DEF_CURRENCY) {
             return 1;
@@ -39,10 +39,10 @@ class ExchangeRateHelper
 
     /**
      * @param string $currency
-     * @return mixed
+     * @return float
      * @throws \Exception
      */
-    public static function getExchangeRatesFromAPI(string $currency)
+    public static function getExchangeRatesFromAPI(string $currency): float
     {
         $cache = new FilesystemAdapter();
 

@@ -10,8 +10,8 @@ class Ratio
     const DEFAULT_RATIO = 0.02;
     const EU_RATIO = 0.01;
 
-    public function getRatio(Transaction $transaction)
+    public function getRatio(Transaction $transaction): float
     {
-        return (($transaction->isEU()) ? self::EU_RATIO : self::DEFAULT_RATIO);
+        return $transaction->isEU() ? self::EU_RATIO : self::DEFAULT_RATIO;
     }
 }
