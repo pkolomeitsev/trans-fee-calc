@@ -34,15 +34,14 @@ class CardHelper
         $cache = new FilesystemAdapter();
 
         $key = sprintf('card-country-code-%s', $binCode);
-        $countryCode = $cache->get($key, function (ItemInterface $item) use ($binCode): string {
+
+        return $cache->get($key, function (ItemInterface $item) use ($binCode): string {
             $item->expiresAfter(3600);
 
             $binLookup = static::getLookupData($binCode);
 
             return $binLookup['country']['alpha2'] ?? '';
         });
-
-        return $countryCode;
     }
 
     /**
